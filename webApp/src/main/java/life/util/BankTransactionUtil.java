@@ -18,8 +18,9 @@ public class BankTransactionUtil {
     return new ArrayList<>(set);
   }
 
+  @SuppressWarnings("unchecked")
   public List<BankTransaction> differenceOfBankTransactions(List<BankTransaction> listA, List<BankTransaction> listB){
-    return ListUtils.removeAll(listA, listB);
+    return (List<BankTransaction>) ListUtils.removeAll(listA, listB);
   }
 
    public List<TableObject> getTableObjectList(List<BankTransaction> bankTransactionList) {
