@@ -1,74 +1,86 @@
 package life.file.parser;
 
-import java.io.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import javax.transaction.Transactional;
-
-import life.database.model.BankTransaction;
-import life.file.DateUtilsImpl;
-import org.springframework.expression.ParseException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import au.com.bytecode.opencsv.CSVParser;
+import au.com.bytecode.opencsv.CSVReader;
+import life.database.model.BankTransaction;
+import life.file.DateUtilsImpl;
 
 @Component
 @Transactional
-public class StatementCsvParser implements TransactionFileParser {
-
+public class StatementCsvParser implements FileParser<MultipartFile, List<BankTransaction>> {
+  private static final Logger LOG = LoggerFactory.getLogger(StatementCsvParser.class);
   private DateUtilsImpl dateUtils = new DateUtilsImpl();
 
+  /**
+   * This will read the file and check if the headers are 3 or 5 columns which correspond to
+   * statement csv file or midata csv file. Finally file should have a .csv extension.
+   *
+   * @param multipartFile file to check
+   * @return true if {@link StatementCsvParser} can parse it
+   */
   @Override
-  public boolean canParse(MultipartFile multipartFile) throws IOException {
+  public boolean canParse(MultipartFile multipartFile) {
+    try (CSVReader reader = new CSVReader(new InputStreamReader(multipartFile.getInputStream()),
+        CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)) {
+      String[] headers = reader.readNext();
+      if (headers.length != 3 && headers.length != 5) {
+        return false;
+      }
+    } catch (IOException e) {
+      LOG.error("Unable to read file {}", multipartFile.getOriginalFilename(), e);
+    }
     return multipartFile.getOriginalFilename().toLowerCase().endsWith(".csv");
   }
 
   /**
-   * Statement parser expect to have 3 headers
+   * Statement CSV file expected to have 3 headers
    * date : DD/MM/YYYY
    * description [a-zA-Z0-9]
    * amount ##.#
+   * <p>
+   * Midata CSV file expected to have 5 headers
+   * date : DD/MM/YYYY
+   * type : [a-zA-Z0-9]{3}
+   * description [a-zA-Z0-9]
+   * amount £##.#
+   * balance : £##.#
    *
-   * @param statement read statement csv file
-   * @return BankTransaction Object
+   * @param multipartFile csv file to parse
+   * @return list of BankTransaction
    */
   @Override
-  public List<BankTransaction> parse(MultipartFile statement) throws IOException, ParseException, java.text.ParseException {
-    final List<BankTransaction> bankTransactions = new ArrayList<>();
-
-    final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(statement.getInputStream()));
-    try {
-      String line;
-      while ((line = bufferedReader.readLine()) != null) {
-        bankTransactions.add(new BankTransaction(
-          getDate(line),
-          getDescription(line),
-          getCost(line)
-        ));
+  public List<BankTransaction> parse(MultipartFile multipartFile) {
+    try (CSVReader reader = new CSVReader(new InputStreamReader(multipartFile.getInputStream()),
+        CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)) {
+      List<String[]> lines = reader.readAll();
+      if (lines.get(0).length == 5) {
+        return lines.stream()
+            .filter(l -> l.length == 5)
+            .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[2], getValue(line[3])))
+            .collect(Collectors.toList());
+      } else if (lines.get(0).length == 3) {
+        return lines.stream()
+            .filter(l -> l.length == 3)
+            .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[1], getValue(line[2])))
+            .collect(Collectors.toList());
       }
-    } finally {
-      bufferedReader.close();
+    } catch (IOException e) {
+      LOG.error("Unable to read file {}", multipartFile.getOriginalFilename(), e);
     }
-    return bankTransactions;
+    return Collections.emptyList();
   }
 
-  public File multipartToFile(MultipartFile multipart) throws IllegalStateException, IOException {
-    File convFile = new File(multipart.getOriginalFilename());
-    multipart.transferTo(convFile);
-    return convFile;
+  private Double getValue(String value) {
+    return Double.parseDouble(value.replace("£", ""));
   }
-
-  private Double getCost(String csvLine) {
-    return Double.parseDouble(csvLine.substring(csvLine.lastIndexOf(",") + 1, csvLine.length()));
-  }
-
-  private String getDescription(String csvLine) {
-    return csvLine.substring(csvLine.indexOf(",") + 1, csvLine.lastIndexOf(","));
-  }
-
-  private LocalDate getDate(String csvLine) throws ParseException, java.text.ParseException {
-    String date = csvLine.substring(0, csvLine.indexOf(","));
-    return dateUtils.convertTextToDate(date);
-  }
-
 }
