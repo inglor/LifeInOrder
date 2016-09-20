@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -63,17 +64,14 @@ public class StatementCsvParser implements FileParser<MultipartFile, List<BankTr
     try (CSVReader reader = new CSVReader(new InputStreamReader(multipartFile.getInputStream()),
         CSVParser.DEFAULT_SEPARATOR, CSVParser.DEFAULT_QUOTE_CHARACTER, 1)) {
       List<String[]> lines = reader.readAll();
-      if (lines.get(0).length == 5) {
-        return lines.stream()
-            .filter(l -> l.length == 5)
-            .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[2], getValue(line[3])))
-            .collect(Collectors.toList());
-      } else if (lines.get(0).length == 3) {
-        return lines.stream()
-            .filter(l -> l.length == 3)
-            .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[1], getValue(line[2])))
-            .collect(Collectors.toList());
-      }
+      return Stream.concat(
+          lines.stream()
+              .filter(line -> line.length == 5)
+              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[2], getValue(line[3]))),
+          lines.stream()
+              .filter(line -> line.length == 3)
+              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[1], getValue(line[2])))
+      ).collect(Collectors.toList());
     } catch (IOException e) {
       LOG.error("Unable to read file {}", multipartFile.getOriginalFilename(), e);
     }
