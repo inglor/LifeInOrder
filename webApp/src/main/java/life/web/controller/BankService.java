@@ -1,25 +1,20 @@
 package life.web.controller;
 
+import javax.inject.Named;
 import java.text.DecimalFormat;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Named;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import life.database.dao.BankTransactionDao;
 import life.database.dao.MonthStatDao;
 import life.database.model.BankTransaction;
 import life.database.model.MonthStat;
 import life.util.BankTransactionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 @Named
 public class BankService implements BankInterface {
-
-  private static final Logger log = LoggerFactory.getLogger(BankService.class);
 
   @Value("${transactions.directory}")
   public String inputDirectory;
@@ -114,7 +109,6 @@ public class BankService implements BankInterface {
       }
     }
   }
-
-  }
+}
 
 
