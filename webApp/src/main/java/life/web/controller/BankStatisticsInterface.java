@@ -1,8 +1,7 @@
 package life.web.controller;
 
-import life.database.model.MonthStat;
-
 import java.util.List;
+import life.database.model.MonthStat;
 
 public interface BankStatisticsInterface {
 
