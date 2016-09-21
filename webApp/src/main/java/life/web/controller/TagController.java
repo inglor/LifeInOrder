@@ -1,18 +1,17 @@
 package life.web.controller;
 
+import javax.inject.Inject;
+import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import life.database.dao.BankTransactionDao;
 import life.database.dao.TagRuleDao;
 import life.database.model.BankTransaction;
 import life.database.model.TagRule;
 import life.util.BankTransactionUtil;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/api/tags/")

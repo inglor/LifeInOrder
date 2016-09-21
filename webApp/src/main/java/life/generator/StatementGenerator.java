@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

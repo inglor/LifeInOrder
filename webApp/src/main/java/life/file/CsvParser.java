@@ -7,15 +7,14 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import life.database.model.BankTransaction;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import life.database.model.BankTransaction;
 
-public class CSVParser {
+public class CsvParser {
 
-    private static final Logger log = LoggerFactory.getLogger(CSVParser.class);
+    private static final Logger log = LoggerFactory.getLogger(CsvParser.class);
     private DateUtilsImpl dateUtils = new DateUtilsImpl();
 
     public List<BankTransaction> getTransactions(String csvFile) throws ParseException, IOException {

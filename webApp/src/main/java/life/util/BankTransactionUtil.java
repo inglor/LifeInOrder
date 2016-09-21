@@ -1,12 +1,14 @@
 package life.util;
 
-import java.time.format.DateTimeFormatter;
-import java.util.*;
 import javax.inject.Named;
-
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.ListUtils;
 import life.database.model.BankTransaction;
 import life.web.controller.TableObject;
-import org.apache.commons.collections.ListUtils;
 
 @Named
 public class BankTransactionUtil {
