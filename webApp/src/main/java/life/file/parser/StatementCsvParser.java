@@ -47,7 +47,7 @@ public class StatementCsvParser implements FileParser<MultipartFile, List<BankTr
   @Override
   public boolean canParse(MultipartFile multipartFile) {
     try {
-      parser.parse(multipartFile.getInputStream());
+      parser.beginParsing(multipartFile.getInputStream());
       String[] headers = parser.parseNext();
       if (headers.length != 3 && headers.length != 5) {
         return false;
