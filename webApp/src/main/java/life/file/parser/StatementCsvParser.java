@@ -22,9 +22,12 @@ import life.file.DateUtilsImpl;
 public class StatementCsvParser implements FileParser<MultipartFile, List<BankTransaction>> {
   private static final Logger LOG = LoggerFactory.getLogger(StatementCsvParser.class);
   private static final String STATEMENT_CSV_REGEX = "(\\d{1,2}/\\d{1,2}/\\d{2},[a-zA-Z0-9].*,-?\\d+.\\d+)";
-  private static final String MIDATA_CSV_REGEX = "(\\d{2}/\\d{2}/\\d{4},.{2,},[\\w\\s\\W]*?,[+|-].\\d+.\\d+,[+|-].\\d+.\\d+)";
-  private static final Predicate<String[]> STATEMENT_FILTER = f -> Pattern.compile(STATEMENT_CSV_REGEX).matcher(String.join(",", f)).find();
-  private static final Predicate<String[]> MIDATA_FILTER = f -> Pattern.compile(MIDATA_CSV_REGEX).matcher(String.join(",", f)).find();
+  private static final String MIDATA_CSV_REGEX =
+      "(\\d{2}/\\d{2}/\\d{4},.{2,},[\\w\\s\\W]*?,[+|-].\\d+.\\d+,[+|-].\\d+.\\d+)";
+  private static final Predicate<String[]> STATEMENT_FILTER = f ->
+      Pattern.compile(STATEMENT_CSV_REGEX).matcher(String.join(",", f)).find();
+  private static final Predicate<String[]> MIDATA_FILTER = f ->
+      Pattern.compile(MIDATA_CSV_REGEX).matcher(String.join(",", f)).find();
   private final DateUtilsImpl dateUtils = new DateUtilsImpl();
   private final CsvParser parser;
 

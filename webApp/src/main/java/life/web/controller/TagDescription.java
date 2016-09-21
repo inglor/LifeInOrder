@@ -33,14 +33,17 @@ class TagDescription {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     TagDescription that = (TagDescription) o;
-
-    if (description != null ? !description.equals(that.description) : that.description != null) return false;
+    if (description != null ? !description.equals(that.description) : that.description != null) {
+      return false;
+    }
     return tags != null ? tags.equals(that.tags) : that.tags == null;
-
   }
 
   @Override
@@ -52,9 +55,9 @@ class TagDescription {
 
   @Override
   public String toString() {
-    return "TagDescription{" +
-        "description='" + description + '\'' +
-        ", tags=" + tags +
-        '}';
+    return "TagDescription{"
+        + "description='" + description + '\''
+        + ", tags=" + tags
+        + '}';
   }
 }

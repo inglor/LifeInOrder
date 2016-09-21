@@ -52,15 +52,20 @@ public class TagRule implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o) return true;
-    if(o == null || getClass() != o.getClass()) return false;
-
-    TagRule tagRule = (TagRule)o;
-
-    if(id != null ? !id.equals(tagRule.id) : tagRule.id != null) return false;
-    if(description != null ? !description.equals(tagRule.description) : tagRule.description != null) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    TagRule tagRule = (TagRule) o;
+    if (id != null ? !id.equals(tagRule.id) : tagRule.id != null) {
+      return false;
+    }
+    if (description != null ? !description.equals(tagRule.description) : tagRule.description != null) {
+      return false;
+    }
     return tags != null ? tags.equals(tagRule.tags) : tagRule.tags == null;
-
   }
 
   @Override
@@ -73,10 +78,10 @@ public class TagRule implements Serializable {
 
   @Override
   public String toString() {
-    return "TagRule{" +
-               "id=" + id +
-               ", description='" + description + '\'' +
-               ", tags=" + tags +
-               '}';
+    return "TagRule{"
+        + "id=" + id
+        + ", description='" + description + '\''
+        + ", tags=" + tags
+        + '}';
   }
 }

@@ -20,7 +20,7 @@ public class MonthStat implements Serializable {
   private Long id;
 
   @Column(name = "YEARMONTH", nullable = false)
-  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="ΜΜ-yyyy")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "ΜΜ-yyyy")
   private YearMonth yearMonth;
 
   @Column(name = "INCOME", nullable = false)
@@ -76,17 +76,26 @@ public class MonthStat implements Serializable {
 
   @Override
   public boolean equals(Object o) {
-    if(this == o) return true;
-    if(o == null || getClass() != o.getClass()) return false;
-
-    MonthStat monthStat = (MonthStat)o;
-
-    if(Double.compare(monthStat.income, income) != 0) return false;
-    if(Double.compare(monthStat.expense, expense) != 0) return false;
-    if(Double.compare(monthStat.profit, profit) != 0) return false;
-    if(id != null ? !id.equals(monthStat.id) : monthStat.id != null) return false;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    MonthStat monthStat = (MonthStat) o;
+    if (Double.compare(monthStat.income, income) != 0) {
+      return false;
+    }
+    if (Double.compare(monthStat.expense, expense) != 0) {
+      return false;
+    }
+    if (Double.compare(monthStat.profit, profit) != 0) {
+      return false;
+    }
+    if (id != null ? !id.equals(monthStat.id) : monthStat.id != null) {
+      return false;
+    }
     return !(yearMonth != null ? !yearMonth.equals(monthStat.yearMonth) : monthStat.yearMonth != null);
-
   }
 
   @Override
@@ -96,22 +105,22 @@ public class MonthStat implements Serializable {
     result = id != null ? id.hashCode() : 0;
     result = 31 * result + (yearMonth != null ? yearMonth.hashCode() : 0);
     temp = Double.doubleToLongBits(income);
-    result = 31 * result + (int)(temp ^ (temp >>> 32));
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
     temp = Double.doubleToLongBits(expense);
-    result = 31 * result + (int)(temp ^ (temp >>> 32));
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
     temp = Double.doubleToLongBits(profit);
-    result = 31 * result + (int)(temp ^ (temp >>> 32));
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
 
   @Override
   public String toString() {
-    return "MonthStat{" +
-             "id=" + id +
-             ", yearMonth=" + yearMonth +
-             ", income=" + income +
-             ", expense=" + expense +
-             ", profit=" + profit +
-             '}';
+    return "MonthStat{"
+        + "id=" + id
+        + ", yearMonth=" + yearMonth
+        + ", income=" + income
+        + ", expense=" + expense
+        + ", profit=" + profit
+        + '}';
   }
 }

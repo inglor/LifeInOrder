@@ -13,9 +13,8 @@ import org.slf4j.LoggerFactory;
 public class StatementGenerator {
 
   private static final String FILENAME = "SmallStatementFile.csv";
-  private static File transactionsFile = new File(Paths.get(FILENAME).toString());
-
   private static final Logger log = LoggerFactory.getLogger(StatementGenerator.class);
+  private static File transactionsFile = new File(Paths.get(FILENAME).toString());
   private static long MINIMUM_FILE_SIZE = 157286400L; // 150 MB
   //  private static long MINIMUM_FILE_SIZE = 15728640; // 15 MB
 
@@ -25,10 +24,10 @@ public class StatementGenerator {
 
   private static void generateFile() {
     try {
-      if(!transactionsFile.exists()) {
-        if(transactionsFile.createNewFile()) {
+      if (!transactionsFile.exists()) {
+        if (transactionsFile.createNewFile()) {
           FileWriter writer = new FileWriter(transactionsFile);
-          while(transactionsFile.length() < MINIMUM_FILE_SIZE) {
+          while (transactionsFile.length() < MINIMUM_FILE_SIZE) {
             writer.write(getRandomDate() + "," + getRandomDescription() + "," + getRandomCost() + "\n");
           }
           writer.flush();
@@ -40,7 +39,7 @@ public class StatementGenerator {
       } else {
         log.warn("File " + transactionsFile.getName() + " already exists.");
       }
-    } catch(IOException e) {
+    } catch (IOException e) {
       log.error("Error while creating file: " + e);
     }
   }
@@ -55,12 +54,12 @@ public class StatementGenerator {
 
   // DESCRIPTION FORMAT: NEXT RETAIL LTD STRATFORD
   private static String getRandomDescription() {
-    String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    String saltChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
     StringBuilder salt = new StringBuilder();
     Random rnd = new Random();
     while (salt.length() < 18) {
-      int index = (int) (rnd.nextFloat() * SALTCHARS.length());
-      salt.append(SALTCHARS.charAt(index));
+      int index = (int) (rnd.nextFloat() * saltChars.length());
+      salt.append(saltChars.charAt(index));
     }
     return salt.toString();
   }

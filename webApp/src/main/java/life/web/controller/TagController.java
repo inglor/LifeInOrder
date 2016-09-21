@@ -23,7 +23,8 @@ public class TagController {
   private BankTransactionUtil util;
 
   @Inject
-  public TagController(BankTransactionDao bankTransactionDao, TagRuleDao tagRuleDao, TagLoader tagLoader, BankTransactionUtil util) {
+  public TagController(BankTransactionDao bankTransactionDao, TagRuleDao tagRuleDao, TagLoader tagLoader,
+                       BankTransactionUtil util) {
     this.bankTransactionDao = bankTransactionDao;
     this.tagRuleDao = tagRuleDao;
     this.tagLoader = tagLoader;
@@ -36,41 +37,43 @@ public class TagController {
   }
 
   @RequestMapping(value = "setTagsForTransaction")
-  public
   @ResponseBody
-  List<TableObject> setTagsForTransaction(@RequestBody TagRule tagRule) {
+  public List<TableObject> setTagsForTransaction(@RequestBody TagRule tagRule) {
     List<BankTransaction> transactions = bankTransactionDao.findAllByOrderByTransactiondateDesc();
-    transactions.stream().filter(bankTransaction -> bankTransaction.getDescription().contains(tagRule.getDescription())).forEach(bankTransaction -> {
-      tagRuleDao.save(tagRule);
-      bankTransactionDao.save(bankTransaction.setTagRule(tagRule));
-    });
+    transactions.stream()
+        .filter(bankTransaction -> bankTransaction.getDescription().contains(tagRule.getDescription()))
+        .forEach(bankTransaction -> {
+          tagRuleDao.save(tagRule);
+          bankTransactionDao.save(bankTransaction.setTagRule(tagRule));
+        });
     return util.getTableObjectList(transactions);
   }
 
   @RequestMapping(value = "getTaggedTransactionsCount")
-  public long getTaggedTransactionsCount(){
-    List<BankTransaction> all = bankTransactionDao.findAllByOrderByTransactiondateDesc();
-    return all.stream().filter(a -> a.containTags()).count();
+  public long getTaggedTransactionsCount() {
+    return bankTransactionDao.findAllByOrderByTransactiondateDesc().stream()
+        .filter(BankTransaction::containTags)
+        .count();
   }
 
   @RequestMapping(value = "getUnTaggedTransactionsCount")
-  public long getUnTaggedTransactionsCount(){
-    List<BankTransaction> all = bankTransactionDao.findAllByOrderByTransactiondateDesc();
-    return all.stream().filter(a -> !a.containTags()).count();
+  public long getUnTaggedTransactionsCount() {
+    return bankTransactionDao.findAllByOrderByTransactiondateDesc().stream()
+        .filter(a -> !a.containTags())
+        .count();
   }
 
   @RequestMapping(value = "getTaggedTransactions")
-  public List<TableObject> getTaggedTransactions(){
-    List<BankTransaction> all = bankTransactionDao.findAllByOrderByTransactiondateDesc();
-    List<BankTransaction> bankTransactions = all.stream().filter(a -> a.containTags()).collect(Collectors.toList());
-    return util.getTableObjectList(bankTransactions);
+  public List<TableObject> getTaggedTransactions() {
+    return util.getTableObjectList(bankTransactionDao.findAllByOrderByTransactiondateDesc().stream()
+        .filter(BankTransaction::containTags)
+        .collect(Collectors.toList()));
   }
 
   @RequestMapping(value = "getUnTaggedTransactions")
-  public List<TableObject> getUnTaggedTransactions(){
-    List<BankTransaction> all = bankTransactionDao.findAllByOrderByTransactiondateDesc();
-    List<BankTransaction> bankTransactions = all.stream().filter(a -> !a.containTags()).collect(Collectors.toList());
-    return util.getTableObjectList(bankTransactions);
+  public List<TableObject> getUnTaggedTransactions() {
+    return util.getTableObjectList(bankTransactionDao.findAllByOrderByTransactiondateDesc().stream()
+        .filter(a -> !a.containTags())
+        .collect(Collectors.toList()));
   }
-
 }

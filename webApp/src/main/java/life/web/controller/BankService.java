@@ -2,6 +2,7 @@ package life.web.controller;
 
 import javax.inject.Named;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,9 +44,9 @@ public class BankService implements BankInterface {
   public List<TableObject> getMonthlyExpensesList(int monthNumber, int yearNumber) {
     List<BankTransaction> bankTransactionList = new ArrayList<BankTransaction>();
     for (BankTransaction bankTransaction : bankTransactionDao.findAllByOrderByTransactiondateDesc()) {
-      if ((bankTransaction.getTransactiondate().getMonthValue() == monthNumber) &&
-          (bankTransaction.getTransactiondate().getYear() == yearNumber) &&
-          (bankTransaction.getCost() < 0)) {
+      if ((bankTransaction.getTransactiondate().getMonthValue() == monthNumber)
+          && (bankTransaction.getTransactiondate().getYear() == yearNumber)
+          && (bankTransaction.getCost() < 0)) {
         bankTransactionList.add(bankTransaction);
       }
     }
@@ -56,9 +57,9 @@ public class BankService implements BankInterface {
   public List<TableObject> getMonthlyIncomeList(int monthNumber, int yearNumber) {
     List<BankTransaction> bankTransactionList = new ArrayList<BankTransaction>();
     for (BankTransaction bankTransaction : bankTransactionDao.findAllByOrderByTransactiondateDesc()) {
-      if ((bankTransaction.getTransactiondate().getMonthValue() == monthNumber) &&
-          (bankTransaction.getTransactiondate().getYear() == yearNumber) &&
-          (bankTransaction.getCost() > 0)) {
+      if ((bankTransaction.getTransactiondate().getMonthValue() == monthNumber)
+          && (bankTransaction.getTransactiondate().getYear() == yearNumber)
+          && (bankTransaction.getCost() > 0)) {
         bankTransactionList.add(bankTransaction);
       }
     }
@@ -84,7 +85,8 @@ public class BankService implements BankInterface {
     double expense = 0;
     double profit;
 
-    YearMonth yearMonth = YearMonth.of(bankTransaction.getTransactiondate().getYear(), bankTransaction.getTransactiondate().getMonthValue());
+    LocalDate transactionDate = bankTransaction.getTransactiondate();
+    YearMonth yearMonth = YearMonth.of(transactionDate.getYear(), transactionDate.getMonthValue());
     if (bankTransaction.getCost() > 0) {
       income = bankTransaction.getCost();
     } else {
@@ -110,5 +112,3 @@ public class BankService implements BankInterface {
     }
   }
 }
-
-

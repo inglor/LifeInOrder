@@ -13,8 +13,9 @@ public class TagLoader {
   public String transactionTags;
 
   private List<String> tags;
+
   @PostConstruct
-  private void loadTagsToDatabase(){
+  private void loadTagsToDatabase() {
     tags = Arrays.asList(transactionTags.split(","));
   }
 

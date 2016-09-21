@@ -20,9 +20,8 @@ public class BankController {
   }
 
   @RequestMapping("getAllTransactions")
-  public
   @ResponseBody
-  List<TableObject> getTableObjects() {
+  public List<TableObject> getTableObjects() {
     return bankInterface.getTableObjects();
   }
 

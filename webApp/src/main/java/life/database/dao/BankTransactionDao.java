@@ -9,6 +9,7 @@ public interface BankTransactionDao extends CrudRepository<BankTransaction, Long
 
   List<BankTransaction> findAllByOrderByTransactiondateDesc();
 
-  List<BankTransaction> findByTransactiondateAndDescriptionAndCost(LocalDate localDate, String description, Double cost);
+  List<BankTransaction> findByTransactiondateAndDescriptionAndCost(LocalDate localDate, String description,
+                                                                   Double cost);
 
 }
