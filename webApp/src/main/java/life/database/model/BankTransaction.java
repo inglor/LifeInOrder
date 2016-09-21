@@ -1,11 +1,18 @@
 package life.database.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.*;
-
 import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -19,7 +26,7 @@ public class BankTransaction implements Serializable {
   private Long id;
 
   @Column(name = "TRANSACTIONDATE", nullable = false)
-  @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd")
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
   private LocalDate transactiondate;
 
   @Column(name = "DESCRIPTION", nullable = false)
@@ -34,8 +41,17 @@ public class BankTransaction implements Serializable {
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "TAG_RULE_ID")
-  @JsonFormat(shape=JsonFormat.Shape.OBJECT)
+  @JsonFormat(shape = JsonFormat.Shape.OBJECT)
   private TagRule tagRule;
+
+  public BankTransaction() {
+  }
+
+  public BankTransaction(LocalDate transactiondate, String description, Double cost) {
+    this.transactiondate = transactiondate;
+    this.description = description;
+    this.cost = cost;
+  }
 
   public LocalDate getTransactiondate() {
     return transactiondate;
@@ -70,25 +86,47 @@ public class BankTransaction implements Serializable {
     return this;
   }
 
-  public BankTransaction() {
+  public List<String> getTags() {
+    return (this.tagRule != null) ? this.tagRule.getTags() : Lists.newArrayList();
   }
 
-  public BankTransaction(LocalDate transactiondate, String description, Double cost) {
-    this.transactiondate = transactiondate;
-    this.description = description;
-    this.cost = cost;
+  public BankTransaction setTags(ArrayList<String> tags) {
+    this.tagRule.getTags().addAll(tags);
+    return this;
+  }
+
+  public boolean containTags() {
+    boolean containTags = false;
+    if (tagRule != null) {
+      containTags = (this.tagRule.getTags().size() > 0);
+    }
+    return containTags;
+  }
+
+  public boolean containTags(List tags) {
+    return this.tagRule.getTags().containsAll(tags);
+  }
+
+  public boolean containTag(String tag) {
+    return this.tagRule.getTags().contains(tag);
   }
 
   @Override
   public boolean equals(Object o) {
-    if(this == o) return true;
-    if(o == null || getClass() != o.getClass()) return false;
-    if(o instanceof BankTransaction) {
-      BankTransaction cmpBankTransaction = (BankTransaction)o;
-      if((transactiondate != null) && (cmpBankTransaction.transactiondate != null) && transactiondate.equals(cmpBankTransaction.transactiondate)) {
-        if((description != null) && (cmpBankTransaction.description != null) && description.equals(cmpBankTransaction.description)
-                && (cost != null) && cmpBankTransaction.cost !=null && cost.equals(cmpBankTransaction.cost) ) {
-           return true;
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (o instanceof BankTransaction) {
+      BankTransaction cmpBankTransaction = (BankTransaction) o;
+      if ((transactiondate != null) && (cmpBankTransaction.transactiondate != null)
+          && transactiondate.equals(cmpBankTransaction.transactiondate)) {
+        if ((description != null) && (cmpBankTransaction.description != null)
+            && description.equals(cmpBankTransaction.description)
+            && (cost != null) && cmpBankTransaction.cost != null && cost.equals(cmpBankTransaction.cost)) {
+          return true;
         }
       }
     }
@@ -102,42 +140,16 @@ public class BankTransaction implements Serializable {
     result = transactiondate.hashCode();
     result = 31 * result + description.hashCode();
     temp = Double.doubleToLongBits(cost);
-    result = 31 * result + (int)(temp ^ (temp >>> 32));
+    result = 31 * result + (int) (temp ^ (temp >>> 32));
     return result;
   }
 
   @Override
   public String toString() {
-    return "BankTransaction { " +
-             "transactiondate= " + transactiondate +
-             ", description= '" + description + '\'' +
-             ", cost= " + cost +
-             '}';
+    return "BankTransaction { "
+        + "transactiondate= " + transactiondate
+        + ", description= '" + description + '\''
+        + ", cost= " + cost
+        + '}';
   }
-
-  public BankTransaction setTags(ArrayList<String> tags) {
-    this.tagRule.getTags().addAll(tags);
-    return this;
-  }
-
-  public List<String> getTags() {
-    return (this.tagRule != null) ? this.tagRule.getTags() : Lists.newArrayList();
-  }
-
-  public boolean containTags() {
-    boolean containTags = false;
-    if(tagRule != null) {
-      containTags = (this.tagRule.getTags().size() > 0);
-    }
-    return containTags;
-  }
-
-  public boolean containTag(String tag) {
-    return this.tagRule.getTags().contains(tag);
-  }
-
-  public boolean containTags(ArrayList tags) {
-    return this.tagRule.getTags().containsAll(tags);
-  }
-
 }
