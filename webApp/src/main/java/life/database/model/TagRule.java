@@ -8,11 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import com.google.common.collect.ComparisonChain;
 
 @Entity
 @Table(name = "TAG_RULE")
-public class TagRule implements Serializable {
+public class TagRule implements Serializable, Comparable<TagRule> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,29 +63,31 @@ public class TagRule implements Serializable {
       return false;
     }
     TagRule tagRule = (TagRule) o;
-    if (id != null ? !id.equals(tagRule.id) : tagRule.id != null) {
-      return false;
-    }
-    if (description != null ? !description.equals(tagRule.description) : tagRule.description != null) {
-      return false;
-    }
-    return tags != null ? tags.equals(tagRule.tags) : tagRule.tags == null;
+    return Objects.equals(description, tagRule.description)
+        && Objects.equals(tags, tagRule.tags);
   }
 
   @Override
   public int hashCode() {
-    int result = id != null ? id.hashCode() : 0;
-    result = 31 * result + (description != null ? description.hashCode() : 0);
-    result = 31 * result + (tags != null ? tags.hashCode() : 0);
-    return result;
+    return Objects.hash(description, tags);
   }
 
   @Override
-  public String toString() {
-    return "TagRule{"
-        + "id=" + id
-        + ", description='" + description + '\''
-        + ", tags=" + tags
-        + '}';
+  public int compareTo(TagRule that) {
+    Comparator<List<String>> tagComparator = Comparator.comparing(new Function<List<String>, String>() {
+      private String res = "";
+
+      @Override
+      public String apply(List<String> tags) {
+        for (String tag : tags) {
+          res += tag;
+        }
+        return res;
+      }
+    });
+    return ComparisonChain.start()
+        .compare(this.description, that.description)
+        .compare(this.getTags(), that.getTags(), tagComparator)
+        .result();
   }
 }

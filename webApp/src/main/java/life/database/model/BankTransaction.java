@@ -13,12 +13,15 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import com.beust.jcommander.internal.Lists;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ComparisonChain;
 
 @Entity
 @Table(name = "BANKTRANSACTION")
-public class BankTransaction implements Serializable {
+public class BankTransaction implements Serializable, Comparable<BankTransaction> {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -119,37 +122,34 @@ public class BankTransaction implements Serializable {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    if (o instanceof BankTransaction) {
-      BankTransaction cmpBankTransaction = (BankTransaction) o;
-      if ((transactiondate != null) && (cmpBankTransaction.transactiondate != null)
-          && transactiondate.equals(cmpBankTransaction.transactiondate)) {
-        if ((description != null) && (cmpBankTransaction.description != null)
-            && description.equals(cmpBankTransaction.description)
-            && (cost != null) && cmpBankTransaction.cost != null && cost.equals(cmpBankTransaction.cost)) {
-          return true;
-        }
-      }
-    }
-    return false;
+    BankTransaction that = (BankTransaction) o;
+    return Objects.equals(transactiondate, that.transactiondate)
+        && Objects.equals(description, that.description)
+        && Objects.equals(cost, that.cost)
+        && Objects.equals(tagRule, that.tagRule);
   }
 
   @Override
   public int hashCode() {
-    int result;
-    long temp;
-    result = transactiondate.hashCode();
-    result = 31 * result + description.hashCode();
-    temp = Double.doubleToLongBits(cost);
-    result = 31 * result + (int) (temp ^ (temp >>> 32));
-    return result;
+    return Objects.hash(transactiondate, description, cost, tagRule);
   }
 
   @Override
   public String toString() {
-    return "BankTransaction { "
-        + "transactiondate= " + transactiondate
-        + ", description= '" + description + '\''
-        + ", cost= " + cost
-        + '}';
+    return MoreObjects.toStringHelper(this)
+        .add("transactiondate", transactiondate)
+        .add("description", description)
+        .add("cost", cost)
+        .toString();
+  }
+
+  @Override
+  public int compareTo(BankTransaction that) {
+    return ComparisonChain.start()
+        .compare(this.transactiondate, that.transactiondate)
+        .compare(this.description, that.description)
+        .compare(this.cost, that.cost)
+        .compare(this.tagRule, that.tagRule)
+        .result();
   }
 }
