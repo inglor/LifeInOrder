@@ -19,4 +19,8 @@ public class DateUtilsImpl {
     }
     throw new IllegalArgumentException("Not able to parse the date for all patterns given: " + date);
   }
+
+  public LocalDate convertTextToDate(String date, String pattern) {
+    return LocalDate.parse(date, DateTimeFormatter.ofPattern(pattern));
+  }
 }
