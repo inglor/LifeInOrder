@@ -21,9 +21,9 @@ import life.file.DateUtilsImpl;
 @Transactional
 public class StatementCsvParser implements FileParser<MultipartFile, List<BankTransaction>> {
   private static final Logger LOG = LoggerFactory.getLogger(StatementCsvParser.class);
-  private static final String STATEMENT_CSV_REGEX = "(\\d{1,2}/\\d{1,2}/\\d{2},[a-zA-Z0-9].*,-?\\d+.\\d+)";
+  private static final String STATEMENT_CSV_REGEX = "\\d{1,2}/\\d{1,2}/\\d{2},[a-zA-Z0-9].*,[+|-]?\\d+(\\.\\d+)?";
   private static final String MIDATA_CSV_REGEX =
-      "(\\d{2}/\\d{2}/\\d{4},.{2,},[\\w\\s\\W]*?,[+|-].\\d+.\\d+,[+|-].\\d+.\\d+)";
+      "\\d{2}/\\d{2}/\\d{4},.{2,3},(?<=,)[^,]+(?=,),[+|-]£\\d+(\\.\\d+)?,[+|-]£\\d+(\\.\\d+)?";
   private static final Predicate<String[]> STATEMENT_FILTER = f ->
       Pattern.compile(STATEMENT_CSV_REGEX).matcher(String.join(",", f)).find();
   private static final Predicate<String[]> MIDATA_FILTER = f ->
@@ -60,12 +60,12 @@ public class StatementCsvParser implements FileParser<MultipartFile, List<BankTr
 
   /**
    * Statement CSV file expected to have 3 headers
-   * date : DD/MM/YYYY
+   * date : MM/dd/yyyy
    * description [a-zA-Z0-9]
    * amount ##.#
    * <p>
    * Midata CSV file expected to have 5 headers
-   * date : DD/MM/YYYY
+   * date : dd/MM/yyyy
    * type : [a-zA-Z0-9]{3}
    * description [a-zA-Z0-9]
    * amount £##.#
@@ -81,18 +81,16 @@ public class StatementCsvParser implements FileParser<MultipartFile, List<BankTr
       return Stream.concat(
           lines.stream()
               .filter(MIDATA_FILTER)
-              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[2], getValue(line[3]))),
+              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0], "dd/MM/yyyy"),
+                  line[2], Double.parseDouble(line[3].replace("£", "")))),
           lines.stream()
               .filter(STATEMENT_FILTER)
-              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]), line[1], getValue(line[2])))
-      ).collect(Collectors.toList());
+              .map(line -> new BankTransaction(dateUtils.convertTextToDate(line[0]),
+                  line[1], Double.parseDouble(line[2].replace("£", ""))))
+      ).sorted().collect(Collectors.toList());
     } catch (IOException e) {
       LOG.error("Unable to read file {}", multipartFile.getOriginalFilename(), e);
     }
     return Collections.emptyList();
-  }
-
-  private Double getValue(String value) {
-    return Double.parseDouble(value.replace("£", ""));
   }
 }
