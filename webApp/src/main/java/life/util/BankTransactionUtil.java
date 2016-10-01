@@ -1,11 +1,11 @@
 package life.util;
 
 import javax.inject.Named;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.ListUtils;
 import life.database.model.BankTransaction;
 import life.web.controller.TableObject;
@@ -27,18 +27,11 @@ public class BankTransactionUtil {
   }
 
   public List<TableObject> getTableObjectList(List<BankTransaction> bankTransactionList) {
-    List<TableObject> tableObjectList = new ArrayList<>();
-    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    for (BankTransaction bankTransaction : bankTransactionList) {
-      tableObjectList.add(new TableObject(
-          bankTransaction.getTransactiondate().toString(),
-          bankTransaction.getDescription(),
-          bankTransaction.getCost(),
-          bankTransaction.getTags()
-      ));
-    }
-    return tableObjectList;
+    return bankTransactionList.stream().map(b -> TableObject.newBuilder()
+        .description(b.getDescription())
+        .cost(b.getCost())
+        .date(b.getTransactiondate().toString())
+        .tags(b.getTags())
+        .build()).collect(Collectors.toList());
   }
-
-
 }
