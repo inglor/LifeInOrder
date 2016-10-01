@@ -6,24 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Bank Statistics Application">
-    <meta name="author" content="Fragkakis Manos">
-
     <link href="webjars/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="webjars/bootstrap/3.3.1/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="webjars/angular-ui-grid/3.1.1/ui-grid.min.css" rel="stylesheet"/>
     <link href="styles/starter.css" rel="stylesheet">
     <link href="webjars/ng-tags-input/2.3.0/ng-tags-input.min.css" rel="stylesheet">
     <link href="styles/tags.css" rel="stylesheet">
-
-
     <link rel="shortcut icon" type="image/ico" href="icons/favicon.ico"/>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,800,700' rel='stylesheet' type='text/css'>
-
-    <style>
-        html, body {
-            height: 100%;
-            padding: 40px; }
-    </style>
 </head>
 
 <body role="document" ng-app="app">
@@ -47,14 +37,8 @@
                         <li><a href="#/Statistics">Statistics</a></li>
                     </ul>
                 </li>
-                <li><a href="#/Microphone">Microphone</a></li>
             </ul>
-            <form class="navbar-form navbar-right" ng-controller="VoiceCtrl">
-                <button ng-click="startMic()" class="btn btn-success">Start Mic</button>
-                <button ng-click="stopMic()" class="btn btn-danger">Stop Mic</button>
-            </form>
         </div>
-
     </div>
 </nav>
 
@@ -74,15 +58,11 @@
 <script src="webjars/nervgh-angular-file-upload/2.1.1/angular-file-upload.min.js"></script>
 <script src="webjars/ng-tags-input/2.3.0/ng-tags-input.min.js"></script>
 
-<script src="scripts/annyang.min.js"></script>
-
 <script src="scripts/app.js" rel="2script"></script>
 <script src="scripts/config/route.js" rel="2script"></script>
 
-<script src="scripts/controllers/MainCtrl.js" rel="2script"></script>
 <script src="scripts/controllers/transactions.js" rel="2script"></script>
 <script src="scripts/controllers/statistics.js" rel="2script"></script>
-<script src="scripts/controllers/voice.js" rel="2script"></script>
 <script src="scripts/controllers/statistics.js" rel="2script"></script>
 <script src="scripts/controllers/upload.js" rel="2script"></script>
 

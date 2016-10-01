@@ -1,6 +1,8 @@
 body {
-    padding-top: 50px;
+    height: 100%;
+    padding: 40px;
 }
+
 .starter-template {
     padding: 40px 15px;
     text-align: center;

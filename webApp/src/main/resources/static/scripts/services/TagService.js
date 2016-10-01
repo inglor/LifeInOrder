@@ -1,52 +1,52 @@
 app.factory('TagService', function ($http) {
 
-  var TAGS_API = "/api/tags/";
+    var TAGS_API = "/api/tags/";
 
-  return {
+    return {
 
-    getTags: function () {
-      return $http({
-        method: 'POST',
-        url: TAGS_API + 'getPredefinedTags',
-        cache: true
-      });
-    },
+        getTags: function () {
+            return $http({
+                method: 'POST',
+                url: TAGS_API + 'getPredefinedTags',
+                cache: true
+            });
+        },
 
-    setTransactionTags: function (tagDescription) {
-      return $http({
-        method: 'POST',
-        url: TAGS_API + 'setTagsForTransaction',
-        data: tagDescription
-      });
-    },
+        setTransactionTags: function (tagDescription) {
+            return $http({
+                method: 'POST',
+                url: TAGS_API + 'setTagsForTransaction',
+                data: tagDescription
+            });
+        },
 
-    getTaggedTransactionsCount: function () {
-      return $http({
-        method: 'GET',
-        url: TAGS_API + 'getTaggedTransactionsCount'
-      });
-    },
+        getTaggedTransactionsCount: function () {
+            return $http({
+                method: 'GET',
+                url: TAGS_API + 'getTaggedTransactionsCount'
+            });
+        },
 
-    getUnTaggedTransactionsCount: function () {
-      return $http({
-        method: 'GET',
-        url: TAGS_API + 'getUnTaggedTransactionsCount'
-      });
-    },
+        getUnTaggedTransactionsCount: function () {
+            return $http({
+                method: 'GET',
+                url: TAGS_API + 'getUnTaggedTransactionsCount'
+            });
+        },
 
-    getTaggedTransactions: function () {
-      return $http({
-        method: 'GET',
-        url: TAGS_API + 'getTaggedTransactions'
-      });
-    },
+        getTaggedTransactions: function () {
+            return $http({
+                method: 'GET',
+                url: TAGS_API + 'getTaggedTransactions'
+            });
+        },
 
-    getUnTaggedTransactions: function () {
-      return $http({
-        method: 'GET',
-        url: TAGS_API + 'getUnTaggedTransactions'
-      });
-    }
+        getUnTaggedTransactions: function () {
+            return $http({
+                method: 'GET',
+                url: TAGS_API + 'getUnTaggedTransactions'
+            });
+        }
 
-  };
+    };
 });
