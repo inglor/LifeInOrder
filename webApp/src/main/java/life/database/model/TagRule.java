@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -72,8 +73,7 @@ public class TagRule implements Serializable, Comparable<TagRule> {
     return Objects.hash(description, tags);
   }
 
-  @Override
-  public int compareTo(TagRule that) {
+  public int compareTo(@NotNull TagRule that) {
     Comparator<List<String>> tagComparator = Comparator.comparing(new Function<List<String>, String>() {
       private String res = "";
 
